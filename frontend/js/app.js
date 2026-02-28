@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!eventsContainer) return;
 
-    let allEvents = [];
+    let debounceTimer;
 
     // Helper to format date
     const formatDate = (dateString) => {
@@ -41,8 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (events.length === 0) {
             eventsContainer.innerHTML = `
                 <div class="empty-state">
-                    <h3>No events found 🕵️‍♂️</h3>
-                    <p>Try adjusting your search or category filter.</p>
+                    <h3>No events found. Be the first to create one!</h3>
                 </div>
             `;
             return;
@@ -92,8 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Events from API
     const loadEvents = async () => {
         try {
-            allEvents = await api.getEvents();
-            renderEvents(allEvents);
+            const search = searchInput ? searchInput.value : '';
+            const category = categoryFilter ? categoryFilter.value : '';
+
+            const events = await api.getEvents(search, category);
+            renderEvents(events);
         } catch (err) {
             eventsContainer.innerHTML = `
                 <div class="empty-state">
@@ -104,20 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Filter Logic (Client-side for instant feedback, could also trigger API call)
-    const filterEvents = async () => {
-        const search = searchInput.value.toLowerCase();
-        const category = categoryFilter.value;
+    // Filter Logic - Debounced backend search
+    const filterEvents = () => {
+        // Show loading state for instant feedback
+        eventsContainer.innerHTML = `
+            <div class="empty-state" style="opacity: 0.7;">
+                <h3>Searching events... 🔍</h3>
+            </div>
+        `;
 
-        // Instead of API call for every keystroke, let's do a client-side filter for speed (WOW factor)
-        // For larger data sets, you'd debounce an API call here.
-        const filtered = allEvents.filter(event => {
-            const matchesSearch = event.name.toLowerCase().includes(search) || event.description.toLowerCase().includes(search);
-            const matchesCat = category ? event.category === category : true;
-            return matchesSearch && matchesCat;
-        });
-
-        renderEvents(filtered);
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            loadEvents();
+        }, 300); // 300ms debounce
     };
 
     if (searchInput) searchInput.addEventListener('input', filterEvents);

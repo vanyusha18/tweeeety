@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } }
+                { description: { $regex: search, $options: 'i' } },
+                { location: { $regex: search, $options: 'i' } }
             ];
         }
 
