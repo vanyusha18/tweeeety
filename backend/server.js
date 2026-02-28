@@ -23,6 +23,11 @@ app.use('/api/events', eventRoutes);
 // Serve Static Frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+// Handle SPA routing - send all other requests to index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
