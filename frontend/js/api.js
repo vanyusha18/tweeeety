@@ -1,5 +1,5 @@
 // frontend/js/api.js
-const API_URL = '/api';
+const API_URL = 'https://tweety-vanyusha-live.loca.lt/api';
 
 const api = {
     // Utility for making authenticated requests
