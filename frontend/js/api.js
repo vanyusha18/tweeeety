@@ -8,6 +8,7 @@ const api = {
 
         const headers = {
             'Content-Type': 'application/json',
+            'Bypass-Tunnel-Reminder': 'true',
             ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
             ...options.headers
         };
