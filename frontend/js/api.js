@@ -1,5 +1,5 @@
 // frontend/js/api.js
-const API_URL = 'https://tweety-hackathon-api.loca.lt/api';
+const API_URL = '/api';
 
 const api = {
     // Utility for making authenticated requests
