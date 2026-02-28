@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tweety | Community Events</title>
+    <!-- Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Homepage Specific Styles */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .search-bar {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input-wrapper input {
+            padding-left: 20px;
+        }
+
+        .category-select {
+            width: 200px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .event-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .event-card-img {
+            height: 180px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .event-card-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .event-card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .event-card-meta {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .event-card-meta i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .event-card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .badges-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                flex-direction: column;
+            }
+            .category-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar glass">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                tweety
+            </a>
+            <div class="nav-links" id="nav-links">
+                <!-- Injected via auth.js -->
+                <a href="login.html">Login</a>
+                <a href="register.html" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Discover Local Events</h1>
+            <p>Connect with your community. Find the best tech meetups, art shows, sports games, and more.</p>
+        </section>
+
+        <section class="search-section">
+            <div class="search-bar glass">
+                <div class="search-input-wrapper">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search events by name or description...">
+                </div>
+                <select id="categoryFilter" class="form-control category-select">
+                    <option value="">All Categories</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Arts">Arts</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Education">Education</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="events-section">
+            <div id="eventsContainer" class="events-grid">
+                <!-- Events will be injected here via app.js -->
+                <div class="empty-state">
+                    <h3>Loading amazing events...</h3>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 tweety. Built for the community.</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

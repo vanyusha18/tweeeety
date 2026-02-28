@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | tweety</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .auth-container {
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 40px;
+        }
+
+        .error-message {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass">
+        <div class="container">
+            <a href="index.html" class="logo">tweety</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="auth-container glass-card">
+            <h2 class="text-center">Create an Account</h2>
+            <p class="text-center mb-2">Join the community to discover and host amazing events.</p>
+
+            <div id="errorMsg" class="error-message"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+            </form>
+
+            <p class="text-center mt-1">
+                Already have an account? <a href="login.html">Login</a>
+            </p>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            try {
+                const data = await api.register(name, email, password);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = 'dashboard.html';
+            } catch (err) {
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

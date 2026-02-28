@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | tweety</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 40px;
+        }
+
+        .error-message {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass">
+        <div class="container">
+            <a href="index.html" class="logo">tweety</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="auth-container glass-card">
+            <h2 class="text-center">Welcome Back</h2>
+            <p class="text-center mb-2">Login to your account to post and manage events.</p>
+
+            <div id="errorMsg" class="error-message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+
+            <p class="text-center mt-1">
+                Don't have an account? <a href="register.html">Sign up</a>
+            </p>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            try {
+                const data = await api.login(email, password);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = 'dashboard.html';
+            } catch (err) {
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

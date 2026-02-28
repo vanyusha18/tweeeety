@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details | tweety</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .event-detail-hero {
+            position: relative;
+            height: 400px;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .event-detail-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .event-detail-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+        }
+
+        .event-title {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .event-meta {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            display: flex;
+            gap: 20px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+        }
+
+        .rsvp-box {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .rsvp-count {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: indulgence;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-detail-hero {
+                height: 300px;
+            }
+
+            .event-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass">
+        <div class="container">
+            <a href="index.html" class="logo">tweety</a>
+            <div class="nav-links" id="nav-links"></div>
+        </div>
+    </nav>
+
+    <main class="container" id="mainContent">
+        <div class="text-center" style="padding: 100px;">
+            <h3>Loading event details...</h3>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 tweety. Built for the community.</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+        const mainContent = document.getElementById('mainContent');
+
+        if (!eventId) {
+            window.location.href = 'index.html';
+        }
+
+        const fallbackImages = {
+            'Tech': 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=1000&q=80',
+            'Arts': 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=1000&q=80',
+            'Sports': 'https://images.unsplash.com/photo-1461896836934-ffe607fa8211?w=1000&q=80',
+            'Education': 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1000&q=80',
+            'Other': 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1000&q=80'
+        };
+
+        const loadEventDetails = async () => {
+            try {
+                const event = await api.getEventById(eventId);
+
+                const imgUrl = event.coverImageUrl || fallbackImages[event.category] || fallbackImages['Other'];
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                const formattedDate = new Date(event.date).toLocaleDateString('en-US', options);
+
+                mainContent.innerHTML = `
+                    <div class="event-detail-hero">
+                        <img src="${imgUrl}" alt="${event.name}" class="event-detail-img">
+                        <div class="event-detail-overlay">
+                            <div>
+                                <span class="badge badge-category" style="background: var(--primary); color: white; margin-bottom: 10px;">${event.category}</span>
+                                <h1 class="event-title">${event.name}</h1>
+                                <div class="event-meta">
+                                    <span>📅 ${formattedDate}</span>
+                                    <span>📍 ${event.location}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div class="left-col">
+                            <div class="glass-card" style="padding: 30px; margin-bottom: 20px;">
+                                <h2>About this Event</h2>
+                                <p style="font-size: 1.1rem; color: var(--text-dark); white-space: pre-wrap;">${event.description}</p>
+                            </div>
+                            
+                            <div class="glass-card" style="padding: 30px;">
+                                <h3>Organizer</h3>
+                                <p><strong>${event.organizerName}</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="sidebar">
+                            <div class="glass-card rsvp-box">
+                                <p class="text-light">People Attending</p>
+                                <div class="rsvp-count" id="rsvpCountDisplay">${event.rsvpCount}</div>
+                                
+                                <div style="margin-top: 20px;" id="rsvpActions">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                renderRsvpActions(event.rsvps || []);
+
+            } catch (err) {
+                mainContent.innerHTML = `
+                    <div class="empty-state glass-card">
+                        <h3>Event Not Found</h3>
+                        <p>${err.message}</p>
+                        <a href="index.html" class="btn btn-primary mt-1">Back to Events</a>
+                    </div>
+                `;
+            }
+        };
+
+        const renderRsvpActions = (rsvpsArray) => {
+            const actionsContainer = document.getElementById('rsvpActions');
+            if (!isAuthenticated()) {
+                actionsContainer.innerHTML = `
+                    <p class="mb-1" style="font-size:0.9rem;">Log in to secure your spot!</p>
+                    <a href="login.html" class="btn btn-primary" style="width: 100%;">Login to RSVP</a>
+                `;
+                return;
+            }
+
+            const user = getUser();
+
+            // Check if user already RSVP'd
+            if (rsvpsArray.includes(user.id)) {
+                actionsContainer.innerHTML = `
+                    <button class="btn btn-outline" style="width: 100%;" disabled>Going ✓</button>
+                `;
+            } else {
+                actionsContainer.innerHTML = `
+                    <button id="rsvpBtn" class="btn btn-primary" style="width: 100%;">RSVP Now</button>
+                    <p id="rsvpError" class="mt-1 text-danger hidden" style="font-size:0.8rem; color: var(--danger);"></p>
+                `;
+                document.getElementById('rsvpBtn').addEventListener('click', handleRsvp);
+            }
+        };
+
+        const handleRsvp = async () => {
+            const rsvpBtn = document.getElementById('rsvpBtn');
+            const rsvpError = document.getElementById('rsvpError');
+
+            rsvpBtn.textContent = 'Processing...';
+            rsvpBtn.disabled = true;
+
+            try {
+                const response = await api.rsvpEvent(eventId);
+                document.getElementById('rsvpCountDisplay').textContent = response.rsvpCount;
+
+                // Update button state
+                const actionsContainer = document.getElementById('rsvpActions');
+                actionsContainer.innerHTML = `<button class="btn btn-outline" style="width: 100%;" disabled>Going ✓</button>`;
+            } catch (err) {
+                rsvpBtn.textContent = 'RSVP Now';
+                rsvpBtn.disabled = false;
+                rsvpError.textContent = err.message;
+                rsvpError.classList.remove('hidden');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', loadEventDetails);
+    </script>
+</body>
+
+</html>
