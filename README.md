@@ -1,60 +1,96 @@
-# tweeeety
-**tweety - Community Event Discovery Platform**
-A modern, full-stack web application designed for discovering and hosting local community events. Built with a clean, student-friendly interface utilizing glassmorphism and modern gradient backgrounds.
+<div align="center">
+  <h1>🐦 Tweety - Community Event Discovery Platform</h1>
+  <p>A modern, full-stack web application designed for discovering and hosting local community events with an elegant interface.</p>
+</div>
 
-## Features
-- **User Authentication**: JWT-based secure login and registration.
-- **Event Management**: Authenticated users can create, manage, and delete their own events.
-- **Event Discovery**: Public listing of events with live, no-reload search and category filtering.
-- **RSVP System**: Users can declare attendance, dynamically increasing the event’s popularity score.
-- **Smart Badges (“WOW Feature”)**:
-  - **🔥 Happening Soon**: Automatically applied to events starting within 48 hours.
-  - **⭐ Trending**: Automatically applied to events with 10 or more RSVPs.
-- **Modern UI Edge Cases Handled**: Empty dashboards, search zero-states, and loading visual feedback.
+<hr/>
 
-## Tech Stack
-- **Frontend**: HTML5, CSS3 (Vanilla, Custom Design System), Vanilla JavaScript.
-- **Backend**: Node.js, Express.js.
-- **Database**: MongoDB (via Mongoose).
+## 📖 Overview
+**Tweety** aims to solve the problem of disjointed community event management by providing a centralized application where organizers can create events, and users can seamlessly browse, search, and RSVP. The app utilizes a sleek glassmorphism design with responsive gradients for a premium user experience.
 
-## Setup Instructions
+## ✨ Features
+- **Secure User Authentication**: Encrypted, JWT-based login and registration flow.
+- **Event Management**: Private dashboards for organizers to Create, Read, Update, and Delete local events.
+- **Real-time Event Discovery**: Live search and intuitive category filters applied instantly.
+- **RSVP Tracking System**: Users can easily RSVP; attendance counts are tracked dynamically to measure popularity.
+- **Smart Badges System**:
+  - **🔥 Happening Soon**: Automatically flags events starting within the next 48 hours.
+  - **⭐ Trending**: Automatically flags events with 10 or more RSVPs.
+- **Modern UI & UX**: Comprehensive handling of edge cases (empty dashboards, search zero-states) paired with satisfying visual feedback.
+
+## 🛠️ Technology Stack
+| Layer        | Technologies Used                               |
+|--------------|-------------------------------------------------|
+| **Frontend** | HTML5, CSS3 (Custom Glassmorphism Design System), Vanilla JavaScript |
+| **Backend**  | Node.js, Express.js                             |
+| **Database** | MongoDB & Mongoose ORM                          |
+
+## 🚀 Setup & Run Instructions
 
 ### Prerequisites
-- Node.js (v14+ recommended)
-- MongoDB running locally on port 27017 (or a MongoDB Atlas URI)
+1. **Node.js** (v14+ is recommended)
+2. **MongoDB** installed locally (running on port `27017`) or a MongoDB Atlas connection string.
 
-### 1. Database Setup
-Ensure your local MongoDB instance is running. If using a cloud database, update `MONGODB_URI` in `backend/.env`.
+### 1. Database Configuration
+By default, the backend expects a local database. If you are using a cloud MongoDB instance, open `backend/.env` and update the `MONGODB_URI` line:
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/eventdb
+JWT_SECRET=your_jwt_secret
+```
 
 ### 2. Backend Initialization
-Open a terminal in the backend folder:
-
+Open a local terminal, navigate to the `backend` folder, install dependencies, and start the local server.
 ```bash
 cd backend
 npm install
 
-# Optional: Seed the database with sample data
+# Optional: To seed the database with initial sample test data
 npm run seed
 
-# Start the server (runs on Port 5000)
+# Start the application server
 npm start
 ```
+*The backend server will run on http://localhost:5000.*
 
 ### 3. Frontend Initialization
-The frontend is pure static HTML/CSS/JS. You can run it using any simple HTTP server. For example, using the `serve` package:
+Because the frontend uses standard HTML/CSS/Vanilla JS, it can be run using any static local server capability.
 
+**Option A - Quickest (using Python or serve):**
 ```bash
-# In a new terminal
 cd frontend
+
+# Using serve
 npx serve
+
+# Or using python
+python -m http.server 3000
 ```
-Then navigate to `http://localhost:3000` (or whatever port serve assigns).
+Then, open your browser and navigate to the local interface (usually `http://localhost:3000`).
 
-## Project Structure
-- `/backend`: Contains the REST API, Mongoose models, and authentication middleware.
-- `/frontend`: Contains the vanilla HTML interface, CSS files for styling, and JS files for API interaction and UI logic.
-- `seed.js`: A helper script in the backend to populate the DB with initial testing state.
+**Option B - Using an IDE:**
+If you are using **VS Code**, you can simply utilize the **Live Server** extension by right-clicking `frontend/index.html` and selecting "Open with Live Server".
 
-## Notes
-- To test the “Trending” badge, log in as different users to RSVP to an event, or run the `seed.js` script to instantly generate a pre-rated events database.
-- Uses `localStorage` for JWT authentication on the client side.
+## 📁 Project Structure
+```text
+/backend
+ ├── /models         # Mongoose User and Event schemas
+ ├── /routes         # API endpoint definitions 
+ ├── /middleware     # Authentication verification
+ ├── /scripts        # Database seeders
+ ├── server.js       # Express server configuration
+ └── package.json    # NodeJS dependencies
+/frontend
+ ├── /css            # Custom UI styles (design system base, utility classes)
+ ├── /js             # Client-side API interactions and view logic
+ └── *.html          # Views (index, dashboard, create-event, etc.)
+README.md            # App documentation
+PROJECT_REPORT.md    # Formal academic documentation 
+```
+
+## 📝 Demo & Submission Notes
+- To demonstrate the "⭐ Trending" dynamic badge, log in as different individuals and RSVP, or execute the `npm run seed` application in the backend to instantly generate test entries.
+- To package the project entirely for project guides and judges (without heavy node modules), refer to the provided script (`package_for_submission.ps1`).
+
+---
+*Developed with ❤️ as a Community Event Full-Stack Solution.*
